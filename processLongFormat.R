@@ -141,7 +141,7 @@ IPT.occurrence = DF.data.noSubstrate %>% ungroup() %>%
          taxonRank = Rank) 
 
 
-IPT.mof = data.frame(eventID = DF.data.noSubstrate.noSubstrate$UNIT_ID, 
+IPT.mof = data.frame(eventID = DF.data.noSubstrate$UNIT_ID, 
                      occurrenceID = DF.data.noSubstrate$occurrenceID,
                      measurementType = tolower(DF.data.noSubstrate$Variable), 
                      measurmenetTypeID = DF.data.noSubstrate$measurementTypeID,
