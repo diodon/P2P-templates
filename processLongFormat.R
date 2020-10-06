@@ -10,10 +10,10 @@ library(dplyr)
 library(ggplot2)
 options(dplyr.summarise.inform = FALSE)
 
-
+## change the default directories as needed
 baseDir = "."
-baseIPT = "IPT"
-baseAnalysis = "Analysis"
+baseIPT = "."
+baseAnalysis = "."
 
 fileName = "DataSheet_longformat_TEST.xlsx"
 
