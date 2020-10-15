@@ -10,38 +10,57 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 ```
 
-This code transforms long format data tables of the Marine Biodiversity Observation Network Pole to Pole of the Americas ([MBON Pole to Pole](https://marinebon.org/p2p/)) into Darwin Core Archive files for data sharing through the Ocean Biodiversity Information System ([OBIS](https://obis.org/)). Just copy the code chunks below and paste into your R console.
+This code transforms long format data tables of the Marine Biodiversity Observation Network Pole to Pole of the Americas ([MBON Pole to Pole](https://marinebon.org/p2p/)) into Darwin Core Archive files for data sharing through the Ocean Biodiversity Information System ([OBIS](https://obis.org/)). It also generates anintegrated file ready for analysis. Just copy the code chunks below and paste into your R console.
+
+
+# Basic Setup
+
+You need few packages to run this code. Also you need to create two new folders ("Data", IPT" and "Analysis") under your working directory. The "Data" folder is where you copy your P2P long format data table.
+
+```{r setupPackages}
+library(lutz)
+library(countrycode)
+library(readxl)
+library(reshape2)
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+library(kableExtra)
+options(dplyr.summarise.inform = FALSE)
+
+
+# Create a "Data", IPT" and "Analysis" folder under your selected directory
+baseDataDir = "Data"
+baseIPT = "IPT"
+baseAnalysis = "Analysis"
+
+```
 
 
 # Load your data table
+
+Set `fileName`to the name of your P2P longformat data table
+
 ```{r, echo=T, warning=FALSE, message=FALSE}
-# Create a "IPT" and "Analysis" folder in your selected directory. Set your directory path as needed
-baseDir = "."
-baseIPT = "IPT"
-baseAnalysis = "Analysis"
-#setwd("~/P2P-templates")
 
 # Select your data table
 fileName = "DataSheet_longformat_TEST.xlsx"
 ```
 
+
 # Read file sheets
 ```{r, echo=T, warning=FALSE, message=FALSE}
 ## Extract information about your sampling site from the SiteInfo tab of your data table file
-library(readxl)
 
-DF.sites = read_xlsx(file.path(baseDir, fileName),sheet = "SiteInfo")
+DF.sites = read_xlsx(file.path(baseDataDir, fileName),sheet = "SiteInfo")
 DF.sites = DF.sites[!is.na(DF.sites$COUNTRY),]
 ```
 
 ## convert time to UTC
 ```{r, echo=T, warning=FALSE, message=FALSE}
-library(lutz)
-library(lubridate)
-library(knitr)
 
 ## get number of seconds from midnight
 secsSTART = (1 -abs(as.numeric(julian(DF.sites$TIME_START)) - (as.integer(julian(DF.sites$TIME_START))))) * (60*60*24)
@@ -59,12 +78,11 @@ DF.sites$TIME_END = DF.sites$eventDate + seconds(secsEND) + hours(dateOffset)
 DF.sites$eventTime = paste(format(DF.sites$TIME_START, "%H:%M:%SZ"), format(DF.sites$TIME_END, "%H:%M:%SZ"), sep="/")
 
 print(timeZone)
-kable(DF.sites[1:5, c(3:5, 13:14)])
+kable(DF.sites[1:5, c(3:5, 13:14)]) %>% kable_styling("striped")
 ```
 
 ## Extract other fields
 ```{r, echo=T, warning=FALSE, message=FALSE}
-library(countrycode)
 
 # Country code
 DF.sites$datasetName = paste0("MBON-P2P-biodiversity-",unique(DF.sites$countryCode))
@@ -85,25 +103,25 @@ print(DF.sites$countryCodeISO[1])
 ## Extrat data, taxa list and codes
 ```{r, echo=T, warning=FALSE, message=FALSE}
 ## data
-DF.data = read_xlsx(file.path(baseDir, fileName),sheet = "DATA")
+DF.data = read_xlsx(file.path(baseDataDir, fileName),sheet = "DATA")
 DF.data = DF.data[!is.na(DF.data$LOCALITY),]
 
 ## spp list
-DF.spp = read_xlsx(file.path(baseDir, fileName),sheet = "sppList")
+DF.spp = read_xlsx(file.path(baseDataDir, fileName),sheet = "sppList")
 
 ## codes
-DF.countryCodes = read_xlsx(file.path(baseDir, fileName),sheet = "Countries")
-DF.localityCodes = read_xlsx(file.path(baseDir, fileName),sheet = "Locality")
-DF.siteCodes = read_xlsx(file.path(baseDir, fileName),sheet = "Sites")
-DF.habitatCodes = read_xlsx(file.path(baseDir, fileName),sheet = "Habitat")
+DF.countryCodes = read_xlsx(file.path(baseDataDir, fileName),sheet = "Countries")
+DF.localityCodes = read_xlsx(file.path(baseDataDir, fileName),sheet = "Locality")
+DF.siteCodes = read_xlsx(file.path(baseDataDir, fileName),sheet = "Sites")
+DF.habitatCodes = read_xlsx(file.path(baseDataDir, fileName),sheet = "Habitat")
 
-kable(DF.data[1:5, 1:7])
-kable(DF.spp[1:5,])
+kable(DF.data[1:5, 1:7]) %>% kable_styling("striped")
+kable(DF.spp[1:5,]) %>% kable_styling("striped")
 ```
 
 # Generate IDs
 ```{r, echo=T, warning=FALSE, message=FALSE}
-library(dplyr)
+
 
 ## add codes: SITES
 DF.sites = left_join(DF.sites, DF.countryCodes, by = "COUNTRY")
@@ -157,7 +175,7 @@ DF.data$measurementUnitID = ifelse(DF.data$Variable=="COVER",
 
 DF.data = DF.data %>% arrange(occurrenceID, scientificName)
 
-kable(DF.data[1:5, ])
+kable(DF.data[1:5, ]) %>% kable_styling("striped")
 ```
 
 ## Cleanup
@@ -209,16 +227,16 @@ IPT.mof = data.frame(eventID = DF.data.noSubstrate$UNIT_ID,
                      measurementUnitID = DF.data.noSubstrate$measurementUnitID
                      )
 print("EventCore")
-kable(IPT.event[1:3, ])
+kable(IPT.event[1:3, ]) %>% kable_styling("striped")
 print("OccurrenceCore")
-kable(IPT.occurrence[1:3, ])
+kable(IPT.occurrence[1:3, ]) %>% kable_styling("striped")
 print("MoF")
-kable(IPT.mof[1:3, ])
+kable(IPT.mof[1:3, ]) %>% kable_styling("striped")
 ```
 
 ## Generate data anaylisis files
 ```{r, echo=T, warning=FALSE, message=FALSE}
-library(reshape2)
+
 
 ## reformat to wide
 DF.dataWide = dcast(occurrenceID+LOCALITY+SITE+STRATA+SAMPLE+scientificName+AphiaID+Rank~Variable, value.var = "Value", data=DF.data, sum)
@@ -230,13 +248,13 @@ rootFileName = paste(unique(DF.sites$countryCodeISO), paste0(unique(DF.sites$loc
                      unique(DF.sites$HABITAT), gsub("-","", min(DF.sites$eventDate)), sep="_")
 
 ## IPT files
-readr::write_csv(IPT.event, path = file.path(baseDir,baseIPT,paste0(rootFileName, "_IPT-event.csv")))
-readr::write_csv(IPT.occurrence, path = file.path(baseDir,baseIPT,paste0(rootFileName, "_IPT-occurrence.csv")))
-readr::write_csv(IPT.mof, path = file.path(baseDir,baseIPT,paste0(rootFileName, "_IPT-mof.csv")))
+readr::write_csv(IPT.event, path = file.path(baseIPT,paste0(rootFileName, "_IPT-event.csv")))
+readr::write_csv(IPT.occurrence, path = file.path(baseIPT,paste0(rootFileName, "_IPT-occurrence.csv")))
+readr::write_csv(IPT.mof, path = file.path(baseIPT,paste0(rootFileName, "_IPT-mof.csv")))
 
 ## Analysis file
-readr::write_csv(DF.dataWide, path = file.path(baseDir,baseAnalysis,paste0(rootFileName, "_analysis.csv")))
-readr::write_csv(DF.sites, path = file.path(baseDir,baseAnalysis,paste0(rootFileName, "_site.csv")))
+readr::write_csv(DF.dataWide, path = file.path(baseAnalysis,paste0(rootFileName, "_analysis.csv")))
+readr::write_csv(DF.sites, path = file.path(baseAnalysis,paste0(rootFileName, "_site.csv")))
 ```
 
 
