@@ -1,3 +1,6 @@
+#!/usr/bin/env Rscript
+args = commandArgs(trailingOnly=TRUE)
+
 ## Process long format data table
 
 
@@ -10,17 +13,27 @@ library(dplyr)
 library(ggplot2)
 options(dplyr.summarise.inform = FALSE)
 
-## change the default directories as needed
-baseDir = "."
-baseIPT = "."
-baseAnalysis = "."
 
-fileName = "DataSheet_longformat_TEST.xlsx"
+
+## change the default directories as needed
+baseDataDir = "Data"
+baseIPT = "IPT"
+baseAnalysis = "Analysis"
+
+# test if there is at least one argument: if not, manually assign the fileName
+if (length(args)==0) {
+  fileName = "DataSheet_longformat_TEST.xlsx"  
+} else if (length(args)==1) {
+  # default output file
+  fileName = args[1]
+}
+
+
 
 
 ## read sheets
 ## Site INFO
-DF.sites = read_xlsx(file.path(baseDir, fileName),sheet = "SiteInfo")
+DF.sites = read_xlsx(file.path(baseDataDir, fileName),sheet = "SiteInfo")
 DF.sites = DF.sites[!is.na(DF.sites$COUNTRY),]
 
 ## convert time to UTC
@@ -45,18 +58,18 @@ DF.sites$samplingSizeUnit = "square meter"
 DF.sites$countryCodeISO = countrycode(DF.sites$COUNTRY, "country.name","iso3c")
 
 ## Data
-DF.data = read_xlsx(file.path(baseDir, fileName),sheet = "DATA")
+DF.data = read_xlsx(file.path(baseDataDir, fileName),sheet = "DATA")
 DF.data = DF.data[!is.na(DF.data$LOCALITY),]
 
 
 ## spp list
-DF.spp = read_xlsx(file.path(baseDir, fileName),sheet = "sppList")
+DF.spp = read_xlsx(file.path(baseDataDir, fileName),sheet = "sppList")
 
 ## codes
-DF.countryCodes = read_xlsx(file.path(baseDir, fileName),sheet = "Countries")
-DF.localityCodes = read_xlsx(file.path(baseDir, fileName),sheet = "Locality")
-DF.siteCodes = read_xlsx(file.path(baseDir, fileName),sheet = "Sites")
-DF.habitatCodes = read_xlsx(file.path(baseDir, fileName),sheet = "Habitat")
+DF.countryCodes = read_xlsx(file.path(baseDataDir, fileName),sheet = "Countries")
+DF.localityCodes = read_xlsx(file.path(baseDataDir, fileName),sheet = "Locality")
+DF.siteCodes = read_xlsx(file.path(baseDataDir, fileName),sheet = "Sites")
+DF.habitatCodes = read_xlsx(file.path(baseDataDir, fileName),sheet = "Habitat")
 
 
 ## make IDs
@@ -161,13 +174,13 @@ rootFileName = paste(unique(DF.sites$countryCodeISO), paste0(unique(DF.sites$loc
                      unique(DF.sites$HABITAT), gsub("-","", min(DF.sites$eventDate)), sep="_")
 
 ## IPT
-readr::write_csv(IPT.event, path = file.path(baseDir,baseIPT,paste0(rootFileName, "_IPT-event.csv")))
-readr::write_csv(IPT.occurrence, path = file.path(baseDir,baseIPT,paste0(rootFileName, "_IPT-occurrence.csv")))
-readr::write_csv(IPT.mof, path = file.path(baseDir,baseIPT,paste0(rootFileName, "_IPT-mof.csv")))
+readr::write_csv(IPT.event, path = file.path(baseIPT,paste0(rootFileName, "_IPT-event.csv")))
+readr::write_csv(IPT.occurrence, path = file.path(baseIPT,paste0(rootFileName, "_IPT-occurrence.csv")))
+readr::write_csv(IPT.mof, path = file.path(baseIPT,paste0(rootFileName, "_IPT-mof.csv")))
 
 ## Analysis
-readr::write_csv(DF.dataWide, path = file.path(baseDir,baseAnalysis,paste0(rootFileName, "_analysis.csv")))
-readr::write_csv(DF.sites, path = file.path(baseDir,baseAnalysis,paste0(rootFileName, "_site.csv")))
+readr::write_csv(DF.dataWide, path = file.path(baseAnalysis,paste0(rootFileName, "_analysis.csv")))
+readr::write_csv(DF.sites, path = file.path(baseAnalysis,paste0(rootFileName, "_site.csv")))
 
 
 
