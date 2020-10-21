@@ -20,16 +20,7 @@ baseDataDir = "Data"
 baseIPT = "IPT"
 baseAnalysis = "Analysis"
 
-# test if there is at least one argument: if not, manually assign the fileName
-if (length(args)==0) {
-  fileName = "DataSheet_longformat_TEST.xlsx"  
-} else if (length(args)==1) {
-  # default output file
-  fileName = args[1]
-}
-
-
-
+fileName = "DataSheet_longformat_PM2019.xlsx" 
 
 ## read sheets
 ## Site INFO
@@ -51,11 +42,12 @@ DF.sites$TIME_END = DF.sites$eventDate + seconds(secsEND) + hours(dateOffset)
 DF.sites$eventTime = paste(format(DF.sites$TIME_START, "%H:%M:%SZ"), format(DF.sites$TIME_END, "%H:%M:%SZ"), sep="/")
 
 ## other fields
-DF.sites$datasetName = paste0("MBON-P2P-biodiversity-",unique(DF.sites$countryCode))
+DF.sites$countryCodeISO = countrycode(DF.sites$COUNTRY, "country.name","iso3c")
+DF.sites$datasetName = paste0("MBON-P2P-biodiversity-",unique(DF.sites$countryCodeISO))
 DF.sites$samplingProtocol = "MBON-P2P_bestpractices-rockyshores"
 DF.sites$samplingSizeValue = 0.25
 DF.sites$samplingSizeUnit = "square meter"
-DF.sites$countryCodeISO = countrycode(DF.sites$COUNTRY, "country.name","iso3c")
+
 
 ## Data
 DF.data = read_xlsx(file.path(baseDataDir, fileName),sheet = "DATA")
@@ -170,8 +162,7 @@ DF.dataWide = dcast(occurrenceID+LOCALITY+SITE+STRATA+SAMPLE+scientificName+Aphi
 
 
 ## save files
-rootFileName = paste(unique(DF.sites$countryCodeISO), paste0(unique(DF.sites$localityCode, collapse="-")), 
-                     unique(DF.sites$HABITAT), gsub("-","", min(DF.sites$eventDate)), sep="_")
+rootFileName = paste(unique(DF.sites$countryCodeISO), paste0(unique(DF.sites$localityCode, collapse="-")),unique(DF.sites$HABITAT), gsub("-","", min(DF.sites$eventDate)), sep="_")
 
 ## IPT
 readr::write_csv(IPT.event, path = file.path(baseIPT,paste0(rootFileName, "_IPT-event.csv")))
