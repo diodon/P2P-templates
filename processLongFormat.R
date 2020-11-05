@@ -23,6 +23,10 @@ fileName = "DataSheet_longformat_TEST_v2.xlsx"
 DF.sites = read_xlsx(file.path(baseDir, fileName),sheet = "SiteInfo")
 DF.sites = DF.sites[!is.na(DF.sites$COUNTRY),]
 
+DF.dates = DF.sites %>% group_by(LOCALITY, SITE) %>% 
+  summarise(DATESTRING = unique(paste0(YEAR, sprintf("%02i",MONTH), sprintf("%02i",DAY))))
+
+
 ## convert time to UTC
 ## get number of seconds from midnight
 secsSTART = (1 -abs(as.numeric(julian(DF.sites$TIME_START)) - (as.integer(julian(DF.sites$TIME_START))))) * (60*60*24)
@@ -99,15 +103,33 @@ DF.data$measurementUnitID = ifelse(DF.data$Variable=="COVER",
                                    "http://vocab.nerc.ac.uk/collection/P06/current/UPCT/",    ## percentage
                                    "http://vocab.nerc.ac.uk/collection/P06/current/UPMS/")   ## number per square meter
 
-
-
 DF.data = DF.data %>% arrange(occurrenceID, scientificName)
 
+
+## Environmental data
+DF.environ = read_xlsx(file.path(baseDir, fileName),sheet = "UNITenvironment")
+DF.environ = DF.environ[!is.na(DF.environ$LOCALITY),]
+
+DF.enVariables = read_xlsx(file.path(baseDir, fileName),sheet = "EnvVariables")
+DF.enVariables = DF.enVariables[!is.na(DF.enVariables$Variable),]
+
+DF.environ = left_join(DF.environ, DF.enVariables, by = "Variable")
+
+## add codes: SITES
+DF.environ$COUNTRY = unique(DF.sites$countryCodeISO)
+DF.environ = left_join(DF.environ, DF.localityCodes, by = "LOCALITY")
+DF.environ = left_join(DF.environ, DF.siteCodes, by = "SITE")
+DF.environ = left_join(DF.environ, DF.dates, by=c("LOCALITY", "SITE"))
+
+## add eventID
+DF.environ$eventID = paste(DF.environ$COUNTRY, DF.environ$localityCode, DF.environ$siteCode, "RS", DF.environ$DATESTRING, DF.environ$STRATA, DF.environ$SAMPLE, sep = "_")
+DF.environ$eventID = gsub("_NA", "", DF.environ$eventID)
 
 
 ## Cleanup
 
 IPT.event = DF.sites %>% 
+  mutate(locality = gsub(" ","_",paste(LOCALITY, SITE, sep="-"))) %>% 
   select(datasetName,
          parentEventID=PARENT_UNIT_ID,
          eventID = UNIT_ID,
@@ -123,9 +145,9 @@ IPT.event = DF.sites %>%
          eventRemarks = REMARKS,
          country = COUNTRY,
          countryCode = countryCodeISO,
-         locality = LOCALITY,
-         decimalLatitude = LATITUDE,
-         decimalLongitude = LONGITUDE,
+         locality,
+         decimalLatitude = LATITUDE.y,
+         decimalLongitude = LONGITUDE.y,
          coordinateUncertaintyInMeters = GPS_ERROR,
          geodeticDatum = DATUM,
          strata=STRATA)
@@ -145,12 +167,18 @@ IPT.occurrence = DF.data.noSubstrate %>% ungroup() %>%
 IPT.mof = data.frame(eventID = DF.data.noSubstrate$UNIT_ID, 
                      occurrenceID = DF.data.noSubstrate$occurrenceID,
                      measurementType = tolower(DF.data.noSubstrate$Variable), 
-                     measurmenetTypeID = DF.data.noSubstrate$measurementTypeID,
+                     measurmentTypeID = DF.data.noSubstrate$measurementTypeID,
                      measurementValue = DF.data.noSubstrate$Value,
                      measurementUnit = DF.data.noSubstrate$measurementUnit,
                      measurementUnitID = DF.data.noSubstrate$measurementUnitID
                      )
-
+IPT.mofEnv =data.frame(eventID = DF.environ$eventID, 
+                       measurementType = tolower(DF.environ$Variable), 
+                       measurmentTypeID = DF.environ$VariableID,
+                       measurementValue = DF.environ$Value,
+                       measurementUnit = DF.environ$Units.y,
+                       measurementUnitID = DF.environ$UnitID)
+IPT.mof = bind_rows(IPT.mof, IPT.mofEnv)
 
 ## generate data anaylisis files
 ## reformat to wide
