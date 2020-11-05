@@ -15,7 +15,7 @@ baseDir = "."
 baseIPT = "."
 baseAnalysis = "."
 
-fileName = "DataSheet_longformat_TEST.xlsx"
+fileName = "DataSheet_longformat_TEST_v2.xlsx"
 
 
 ## read sheets
@@ -80,7 +80,8 @@ DF.data = DF.data %>% group_by(LOCALITY, SITE, STRATA, SAMPLE) %>%
 DF.data$occurrenceID = paste(DF.data$UNIT_ID, DF.data$SAMPLE, sprintf("%03d", DF.data$sampleOrganismID), sep="_")
 
 ## convert abundance to count per square meter
-DF.data$Value[DF.data$Variable=="ABUNDANCE"] = DF.data$Value[DF.data$Variable=="ABUNDANCE"] * 4
+densityMultiplier = list("FULL QUADRAT" = 4 , "EIGHT RANDOM" = 100/8*4)
+DF.data$Value[DF.data$Variable=="ABUNDANCE"] = DF.data$Value[DF.data$Variable=="ABUNDANCE"] * densityMultiplier[[DF.data$AREA_quadrat]]
 
 
 ## other fields for IPT
