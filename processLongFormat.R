@@ -190,9 +190,9 @@ rootFileName = paste(unique(DF.sites$countryCodeISO), paste0(unique(DF.sites$loc
                      unique(DF.sites$HABITAT), gsub("-","", min(DF.sites$eventDate)), sep="_")
 
 ## IPT
-readr::write_csv(IPT.event, path = file.path(baseDir,baseIPT,paste0(rootFileName, "_IPT-event.csv")))
-readr::write_csv(IPT.occurrence, path = file.path(baseDir,baseIPT,paste0(rootFileName, "_IPT-occurrence.csv")))
-readr::write_csv(IPT.mof, path = file.path(baseDir,baseIPT,paste0(rootFileName, "_IPT-mof.csv")))
+readr::write_csv(IPT.event, path = file.path(baseDir,baseIPT,paste0(rootFileName, "_IPT-event.csv")), na = "")
+readr::write_csv(IPT.occurrence, path = file.path(baseDir,baseIPT,paste0(rootFileName, "_IPT-occurrence.csv")), na = "")
+readr::write_csv(IPT.mof, path = file.path(baseDir,baseIPT,paste0(rootFileName, "_IPT-mof.csv")), na = "")
 
 ## Analysis
 readr::write_csv(DF.dataWide, path = file.path(baseDir,baseAnalysis,paste0(rootFileName, "_analysis.csv")))
