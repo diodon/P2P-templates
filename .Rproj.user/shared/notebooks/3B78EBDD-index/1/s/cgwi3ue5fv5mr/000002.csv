@@ -1,4 +1,0 @@
-"0","library(reshape2)"
-"0",""
-"0","## reformat to wide"
-"0","DF.dataWide = dcast(occurrenceID+LOCALITY+SITE+STRATA+SAMPLE+scientificName+AphiaID+Rank~Variable, value.var = ""Value"", data=DF.data, sum)"

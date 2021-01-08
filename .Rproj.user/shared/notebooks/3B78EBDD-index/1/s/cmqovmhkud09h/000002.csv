@@ -1,8 +1,0 @@
-"0","# Create a ""IPT"" and ""Analysis"" folder in your selected directory. Set your directory path as needed"
-"0","baseDir = ""."""
-"0","baseIPT = ""IPT"""
-"0","baseAnalysis = ""Analysis"""
-"0","#setwd(""~/P2P-templates"")"
-"0",""
-"0","# Select your data table"
-"0","fileName = ""DataSheet_longformat_TEST.xlsx"""

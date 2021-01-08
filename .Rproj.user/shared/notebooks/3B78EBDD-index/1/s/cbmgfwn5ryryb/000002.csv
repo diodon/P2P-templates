@@ -1,5 +1,0 @@
-"0","## Extract information about your sampling site from the SiteInfo tab of your data table file"
-"0","library(readxl)"
-"0",""
-"0","DF.sites = read_xlsx(file.path(baseDir, fileName),sheet = ""SiteInfo"")"
-"0","DF.sites = DF.sites[!is.na(DF.sites$COUNTRY),]"
