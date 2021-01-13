@@ -3,12 +3,12 @@ title: "DwCA_gen"
 author: "Eduardo Klein and Enrique Montes"
 date: "10/7/2020"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     number_sections: yes
     toc: yes
     toc_float: yes
+  pdf_document:
+    toc: yes
   word_document:
     toc: yes
 ---
