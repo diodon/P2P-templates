@@ -1,5 +1,5 @@
 ---
-title: "DwC-A Generator"
+title: "DwC-A Writer"
 author: "Eduardo Klein and Enrique Montes (emontesh@usf.edu)"
 date: "10/7/2020"
 output:
@@ -27,13 +27,13 @@ To test this script, you will need to:
 
 - Set your working directory to the location of these three folders (e.g. setwd("~/your directory").
 
-- Save the [The DataSheet_longformat_TEST](protocols/DataSheet_longformat_TEST.xlsx) file in the "Data" folder. This is the data table that you will substitute with your own data.
+- Save the [The DataSheet_longformat_TEST](DataSheet_longformat_TEST.xlsx) file in the "Data" folder. This is the data table that you will substitute with your own data.
 
 Now, just copy the code chunks below and paste them into your R console.
 
 # Basic Setup
 
-You need a few packages to run this code. Check that the "Data", IPT" and "Analysis" folders are created under your working directory. [The DataSheet_longformat_TEST](protocols/DataSheet_longformat_TEST.xlsx) file should be available in the "Data" folder.
+You need a few packages to run this code. Check that the "Data", IPT" and "Analysis" folders are created under your working directory. [The DataSheet_longformat_TEST](DataSheet_longformat_TEST.xlsx) file should be available in the "Data" folder.
 
 ```{r setupPackages}
 library(lutz)
