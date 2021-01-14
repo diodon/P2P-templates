@@ -1525,18 +1525,18 @@ div.tocify {
 </div>
 
 
-<p>This script transforms long-format data tables used in rocky intertidal surveys of the Marine Biodiversity Observation Network Pole to Pole of the Americas (<a href="https://marinebon.org/p2p/">MBON Pole to Pole</a>) into Darwin Core Archive (DwC-A) files for publishing data in the Ocean Biodiversity Information System (<a href="https://obis.org/">OBIS</a>) following instructions from this <a href="https://diodon.github.io/P2P_documents/PublishData/docs/PublishingDataIPT.html">manual</a>. It also generates an integrated file ready for data analysis.</p>
+<p>This script transforms long-format data tables used in rocky intertidal surveys of the Marine Biodiversity Observation Network Pole to Pole of the Americas (<a href="https://marinebon.org/p2p/" target="_blank">MBON Pole to Pole</a>) into Darwin Core Archive (DwC-A) files for publishing data in the Ocean Biodiversity Information System (<a href="https://obis.org/">OBIS</a>){target=&quot;_blank&quot;} following instructions from this <a href="https://diodon.github.io/P2P_documents/PublishData/docs/PublishingDataIPT.html" target="_blank">manual</a>. It also generates an integrated file ready for data analysis.</p>
 <p>To test this script, you will need to:</p>
 <ul>
 <li><p>Install R software.</p></li>
 <li><p>Create three folders in your working directory: Analysis, Data, IPT.</p></li>
 <li><p>Set your working directory to the location of these three folders (e.g. setwd(“~/your directory”).</p></li>
-<li><p>Save the <a href="https://github.com/marinebon/p2p/blob/master/protocols/DataSheet_longformat_TEST.xlsx">The DataSheet_longformat_TEST</a> file in the “Data” folder. This is the data table that you will substitute with your own data.</p></li>
+<li><p>Save the <a href="https://github.com/diodon/P2P-templates/blob/main/DataSheet_longformat_TEST_v2.xlsx" target="_blank">The DataSheet_longformat_TEST</a> file in the “Data” folder. This is the data table that you will substitute with your own data.</p></li>
 </ul>
 <p>Now, just copy the code chunks below and paste them into your R console.</p>
 <div id="basic-setup" class="section level1">
 <h1><span class="header-section-number">1</span> Basic Setup</h1>
-<p>You need a few packages to run this code. Check that the “Data”, IPT&quot; and “Analysis” folders are created under your working directory. <a href="https://github.com/marinebon/p2p/blob/master/protocols/DataSheet_longformat_TEST.xlsx">The DataSheet_longformat_TEST</a> file should be available in the “Data” folder.</p>
+<p>You need a few packages to run this code. Check that the “Data”, IPT&quot; and “Analysis” folders are created under your working directory. <a href="https://github.com/diodon/P2P-templates/blob/main/DataSheet_longformat_TEST_v2.xlsx" target="_blank">The DataSheet_longformat_TEST</a> file should be available in the “Data” folder.</p>
 <pre class="r"><code>library(lutz)
 library(countrycode)
 library(readxl)
@@ -1556,7 +1556,7 @@ baseAnalysis = &quot;Analysis&quot;</code></pre>
 <h1><span class="header-section-number">2</span> Load your data table</h1>
 <p>Set <code>fileName</code>to the name of the longformat data table from your survey</p>
 <pre class="r"><code># Select your data table
-fileName = &quot;DataSheet_longformat_TEST.xlsx&quot;</code></pre>
+fileName = &quot;DataSheet_longformat_TEST_v2.xlsx&quot;</code></pre>
 </div>
 <div id="read-file-sheets" class="section level1">
 <h1><span class="header-section-number">3</span> Read file sheets</h1>
@@ -1743,13 +1743,13 @@ STRATA
 SAMPLE
 </th>
 <th style="text-align:left;">
+AREA_quadrat
+</th>
+<th style="text-align:left;">
 scientificName
 </th>
 <th style="text-align:left;">
 Variable
-</th>
-<th style="text-align:right;">
-Value
 </th>
 </tr>
 </thead>
@@ -1768,13 +1768,13 @@ HIGH
 S02
 </td>
 <td style="text-align:left;">
+FULL QUADRAT
+</td>
+<td style="text-align:left;">
 substrate_BAREROCK
 </td>
 <td style="text-align:left;">
 COVER
-</td>
-<td style="text-align:right;">
-22
 </td>
 </tr>
 <tr>
@@ -1791,13 +1791,13 @@ MID
 S01
 </td>
 <td style="text-align:left;">
+FULL QUADRAT
+</td>
+<td style="text-align:left;">
 substrate_BAREROCK
 </td>
 <td style="text-align:left;">
 COVER
-</td>
-<td style="text-align:right;">
-2
 </td>
 </tr>
 <tr>
@@ -1814,13 +1814,13 @@ MID
 S02
 </td>
 <td style="text-align:left;">
+FULL QUADRAT
+</td>
+<td style="text-align:left;">
 substrate_BAREROCK
 </td>
 <td style="text-align:left;">
 COVER
-</td>
-<td style="text-align:right;">
-1
 </td>
 </tr>
 <tr>
@@ -1837,13 +1837,13 @@ MID
 S03
 </td>
 <td style="text-align:left;">
+FULL QUADRAT
+</td>
+<td style="text-align:left;">
 substrate_BAREROCK
 </td>
 <td style="text-align:left;">
 COVER
-</td>
-<td style="text-align:right;">
-5
 </td>
 </tr>
 <tr>
@@ -1860,13 +1860,13 @@ MID
 S04
 </td>
 <td style="text-align:left;">
+FULL QUADRAT
+</td>
+<td style="text-align:left;">
 substrate_BAREROCK
 </td>
 <td style="text-align:left;">
 COVER
-</td>
-<td style="text-align:right;">
-3
 </td>
 </tr>
 </tbody>
@@ -1887,6 +1887,9 @@ Authority
 <th style="text-align:left;">
 Rank
 </th>
+<th style="text-align:left;">
+Catami
+</th>
 </tr>
 </thead>
 <tbody>
@@ -1903,6 +1906,9 @@ Gray, 1867
 <td style="text-align:left;">
 Genus
 </td>
+<td style="text-align:left;">
+NA
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -1916,6 +1922,9 @@ Kirchenpauer, 1884
 </td>
 <td style="text-align:left;">
 Genus
+</td>
+<td style="text-align:left;">
+NA
 </td>
 </tr>
 <tr>
@@ -1931,6 +1940,9 @@ Abietinaria abietina
 <td style="text-align:left;">
 Species
 </td>
+<td style="text-align:left;">
+NA
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -1945,6 +1957,9 @@ Abra alba
 <td style="text-align:left;">
 Species
 </td>
+<td style="text-align:left;">
+NA
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -1958,6 +1973,9 @@ Acanthais brevidentata
 </td>
 <td style="text-align:left;">
 Species
+</td>
+<td style="text-align:left;">
+NA
 </td>
 </tr>
 </tbody>
@@ -2054,6 +2072,9 @@ STRATA
 SAMPLE
 </th>
 <th style="text-align:left;">
+AREA_quadrat
+</th>
+<th style="text-align:left;">
 scientificName
 </th>
 <th style="text-align:left;">
@@ -2118,6 +2139,9 @@ HIGH
 S01
 </td>
 <td style="text-align:left;">
+FULL QUADRAT
+</td>
+<td style="text-align:left;">
 Brachidontes rodriguezii
 </td>
 <td style="text-align:left;">
@@ -2178,6 +2202,9 @@ HIGH
 </td>
 <td style="text-align:left;">
 S01
+</td>
+<td style="text-align:left;">
+FULL QUADRAT
 </td>
 <td style="text-align:left;">
 Ulva prolifera
@@ -2242,6 +2269,9 @@ HIGH
 S02
 </td>
 <td style="text-align:left;">
+FULL QUADRAT
+</td>
+<td style="text-align:left;">
 substrate_BAREROCK
 </td>
 <td style="text-align:left;">
@@ -2304,6 +2334,9 @@ HIGH
 S02
 </td>
 <td style="text-align:left;">
+FULL QUADRAT
+</td>
+<td style="text-align:left;">
 Balanus glandula
 </td>
 <td style="text-align:left;">
@@ -2364,6 +2397,9 @@ HIGH
 </td>
 <td style="text-align:left;">
 S02
+</td>
+<td style="text-align:left;">
+FULL QUADRAT
 </td>
 <td style="text-align:left;">
 Brachidontes rodriguezii
@@ -2437,8 +2473,8 @@ IPT.event = DF.sites %&gt;%
          country = COUNTRY,
          countryCode = countryCodeISO,
          locality = LOCALITY,
-         decimalLatitude = LATITUDE,
-         decimalLongitude = LONGITUDE,
+         decimalLatitude = LATITUDE.x,
+         decimalLongitude = LONGITUDE.x,
          coordinateUncertaintyInMeters = GPS_ERROR,
          geodeticDatum = DATUM,
          strata=STRATA)
@@ -2943,7 +2979,7 @@ readr::write_csv(IPT.mof, path = file.path(baseIPT,paste0(rootFileName, &quot;_I
 ## Analysis file
 readr::write_csv(DF.dataWide, path = file.path(baseAnalysis,paste0(rootFileName, &quot;_analysis.csv&quot;)))
 readr::write_csv(DF.sites, path = file.path(baseAnalysis,paste0(rootFileName, &quot;_site.csv&quot;)))</code></pre>
-<p><strong>You are done! You can now upload your data (DwC-A files) to <a href="https://obis.org/">OBIS</a> following this How-To <a href="https://diodon.github.io/P2P_documents/PublishData/docs/PublishingDataIPT.html">manual</a>.</strong></p>
+<p><strong>You are done! You can now upload your data (DwC-A files) to <a href="https://obis.org/" target="_blank">OBIS</a> following this How-To <a href="https://diodon.github.io/P2P_documents/PublishData/docs/PublishingDataIPT.html" target="_blank">manual</a>.</strong></p>
 </div>
 </div>
 
