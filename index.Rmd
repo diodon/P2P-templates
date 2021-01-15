@@ -17,11 +17,13 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 ```
 
-This script transforms long-format data tables used in rocky intertidal surveys of the Marine Biodiversity Observation Network Pole to Pole of the Americas ([MBON Pole to Pole](https://marinebon.org/p2p/){target="_blank"}) into Darwin Core Archive (DwC-A) files for publishing data in the Ocean Biodiversity Information System ([OBIS](https://obis.org/)){target="_blank"} following instructions from this [manual](https://diodon.github.io/P2P_documents/PublishData/docs/PublishingDataIPT.html){target="_blank"}. It also generates an integrated file ready for data analysis. 
+This script transforms long-format data tables used in rocky intertidal surveys of the Marine Biodiversity Observation Network Pole to Pole of the Americas ([MBON Pole to Pole](https://marinebon.org/p2p/){target="_blank"}) into Darwin Core Archive (DwC-A) files for publishing data in the Ocean Biodiversity Information System ([OBIS](https://obis.org/){target="_blank"}) following instructions from this [manual](https://diodon.github.io/P2P_documents/PublishData/docs/PublishingDataIPT.html){target="_blank"}. It also generates an integrated file ready for data analysis. 
+
+**The original R Markdown version of this document is available [here](https://github.com/diodon/P2P-templates/blob/rmd_instructions/index.Rmd){target="_blank"}**.
 
 To test this script, you will need to:
 
-- Install R software.
+- Install R software and RStudio.
 
 - Create three folders in your working directory: Analysis, Data, IPT.
 
