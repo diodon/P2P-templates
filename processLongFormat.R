@@ -42,11 +42,12 @@ DF.sites$TIME_END = DF.sites$eventDate + seconds(secsEND) + hours(dateOffset)
 DF.sites$eventTime = paste(format(DF.sites$TIME_START, "%H:%M:%SZ"), format(DF.sites$TIME_END, "%H:%M:%SZ"), sep="/")
 
 ## other fields
-DF.sites$datasetName = paste0("MBON-P2P-biodiversity-",unique(DF.sites$countryCode))
+DF.sites$countryCodeISO = countrycode(DF.sites$COUNTRY, "country.name","iso3c")
+DF.sites$datasetName = paste0("MBON-P2P-biodiversity-",unique(DF.sites$countryCodeISO))
 DF.sites$samplingProtocol = "MBON-P2P_bestpractices-rockyshores"
 DF.sites$samplingSizeValue = 0.25
 DF.sites$samplingSizeUnit = "square meter"
-DF.sites$countryCodeISO = countrycode(DF.sites$COUNTRY, "country.name","iso3c")
+
 
 ## Data
 DF.data = read_xlsx(file.path(baseDir, fileName),sheet = "DATA")
@@ -85,7 +86,7 @@ DF.data$occurrenceID = paste(DF.data$UNIT_ID, DF.data$SAMPLE, sprintf("%03d", DF
 
 ## convert abundance to count per square meter
 densityMultiplier = list("FULL QUADRAT" = 4 , "EIGHT RANDOM" = 100/8*4)
-DF.data$Value[DF.data$Variable=="ABUNDANCE"] = DF.data$Value[DF.data$Variable=="ABUNDANCE"] * densityMultiplier[[DF.data$AREA_quadrat]]
+DF.data$Value[DF.data$Variable=="ABUNDANCE"] = DF.data$Value[DF.data$Variable=="ABUNDANCE"] * densityMultiplier[[DF.data$AREA_quadrat]] #this is not working 
 
 
 ## other fields for IPT
@@ -153,7 +154,8 @@ IPT.event = DF.sites %>%
          strata=STRATA)
 
 DF.data.noSubstrate = DF.data %>% 
-  filter(! grepl("substrate", scientificName, fixed = T))
+  filter(! grepl("substrate", scientificName, fixed = T))%>% filter(! grepl("SUBSTRATE", scientificName, fixed = T)) #I added SUBSTRATE in capital letter to take our WITHOUT_SUBSTRATE
+
 
 IPT.occurrence = DF.data.noSubstrate %>% ungroup() %>% 
   select(eventID = UNIT_ID,
